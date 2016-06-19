@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.flatironschool.javacs;
 
@@ -13,7 +13,7 @@ import java.util.Set;
 
 /**
  * Implementation of a Map using a binary search tree.
- * 
+ *
  * @param <K>
  * @param <V>
  *
@@ -32,7 +32,7 @@ public class MyTreeMap<K, V> implements Map<K, V> {
 		public V value;
 		public Node left = null;
 		public Node right = null;
-		
+
 		/**
 		 * @param key
 		 * @param value
@@ -44,7 +44,7 @@ public class MyTreeMap<K, V> implements Map<K, V> {
 			this.value = value;
 		}
 	}
-		
+
 	@Override
 	public void clear() {
 		size = 0;
@@ -57,8 +57,8 @@ public class MyTreeMap<K, V> implements Map<K, V> {
 	}
 
 	/**
-	 * Returns the entry that contains the target key, or null if there is none. 
-	 * 
+	 * Returns the entry that contains the target key, or null if there is none.
+	 *
 	 * @param target
 	 */
 	private Node findNode(Object target) {
@@ -66,19 +66,40 @@ public class MyTreeMap<K, V> implements Map<K, V> {
 		if (target == null) {
             throw new NullPointerException();
 	    }
-		
+
 		// something to make the compiler happy
 		@SuppressWarnings("unchecked")
 		Comparable<? super K> k = (Comparable<? super K>) target;
-		
+
 		// the actual search
-        // TODO: Fill this in.
-        return null;
+    // TODO: Fill this in.
+		return findNodeHelper(root, k);
+    // return null;
+	}
+
+	/*
+	 * Helps find node containing target key, recursively.
+	 */
+	private Node findNodeHelper(Node node, Comparable<? super K> target) {
+		if (node == null) {
+			return null;
+		} else if (equals(target, node.key)) {
+			return node;
+		} else if (target.compareTo(node.key) < 0) {
+			// target is less than current node's key; search the left branch
+			return findNodeHelper(node.left, target);
+		} else if (target.compareTo(node.key) > 0) {
+			// target is greater than current node's key; search the right branch
+			return findNodeHelper(node.right, target);
+		} else {
+			System.out.println("findNodeHelper shouldn't reach this!");
+			return null;
+		}
 	}
 
 	/**
 	 * Compares two keys or two values, handling null correctly.
-	 * 
+	 *
 	 * @param target
 	 * @param obj
 	 * @return
@@ -92,7 +113,21 @@ public class MyTreeMap<K, V> implements Map<K, V> {
 
 	@Override
 	public boolean containsValue(Object target) {
-		return false;
+		return containsValueHelper(root, target);
+	}
+
+	/*
+	 * Helps find node containing target value, recursively.
+	 */
+	private boolean containsValueHelper(Node node, Object target) {
+		if (node == null) {
+			return false;
+		} else if (equals(target, node.value)) {
+			return true;
+		} else {
+			return (containsValueHelper(node.left, target) ||
+							containsValueHelper(node.right, target) );
+		}
 	}
 
 	@Override
@@ -170,7 +205,7 @@ public class MyTreeMap<K, V> implements Map<K, V> {
 		}
 		return set;
 	}
-	
+
 	/**
 	 * @param args
 	 */
@@ -180,7 +215,7 @@ public class MyTreeMap<K, V> implements Map<K, V> {
 		map.put("Word2", 2);
 		Integer value = map.get("Word1");
 		System.out.println(value);
-		
+
 		for (String key: map.keySet()) {
 			System.out.println(key + ", " + map.get(key));
 		}
@@ -188,9 +223,9 @@ public class MyTreeMap<K, V> implements Map<K, V> {
 
 	/**
 	 * Makes a node.
-	 * 
+	 *
 	 * This is only here for testing purposes.  Should not be used otherwise.
-	 * 
+	 *
 	 * @param key
 	 * @param value
 	 * @return
@@ -201,9 +236,9 @@ public class MyTreeMap<K, V> implements Map<K, V> {
 
 	/**
 	 * Sets the instance variables.
-	 * 
+	 *
 	 * This is only here for testing purposes.  Should not be used otherwise.
-	 * 
+	 *
 	 * @param node
 	 * @param size
 	 */
@@ -214,9 +249,9 @@ public class MyTreeMap<K, V> implements Map<K, V> {
 
 	/**
 	 * Returns the height of the tree.
-	 * 
+	 *
 	 * This is only here for testing purposes.  Should not be used otherwise.
-	 * 
+	 *
 	 * @return
 	 */
 	public int height() {
