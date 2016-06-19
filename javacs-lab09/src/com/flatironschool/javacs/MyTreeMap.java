@@ -153,7 +153,18 @@ public class MyTreeMap<K, V> implements Map<K, V> {
 	public Set<K> keySet() {
 		Set<K> set = new LinkedHashSet<K>();
         // TODO: Fill this in.
+		keySetHelper(root, set);
 		return set;
+	}
+
+	private void keySetHelper(Node node, Set<K> set) {
+		set.add(node.key);
+		if (node.left != null) {
+			keySetHelper(node.left, set);
+		}
+		if (node.right != null) {
+			keySetHelper(node.right, set);
+		}
 	}
 
 	@Override
@@ -166,12 +177,44 @@ public class MyTreeMap<K, V> implements Map<K, V> {
 			size++;
 			return null;
 		}
+
 		return putHelper(root, key, value);
 	}
 
 	private V putHelper(Node node, K key, V value) {
         // TODO: Fill this in.
-        return null;
+				// something to make the compiler happy
+				@SuppressWarnings("unchecked")
+				Comparable<? super K> k = (Comparable<? super K>) key;
+				int compare = k.compareTo(node.key);
+
+				if (compare == 0) {
+					// key matches current node's key!; replace old value
+					V oldValue = node.value;
+					node.value = value;
+					return oldValue;
+				} else if (compare < 0) {
+					// key is less than current node's key; put into left branch
+					if (node.left == null) {
+						node.left = new Node(key, value);
+						size += 1;
+						return null;
+					} else {
+						return putHelper(node.left, key, value);
+					}
+				} else if (compare > 0) {
+					// key is greater than current node's key; put into right branch
+					if (node.right == null) {
+						node.right = new Node(key, value);
+						size += 1;
+						return null;
+					} else {
+						return putHelper(node.right, key, value);
+					}
+				} else {
+					System.out.println("putHelper should not reach here!");
+					return null;
+				}
 	}
 
 	@Override
